@@ -16,10 +16,13 @@ import nltk
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler, RobustScaler
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import precision_score, recall_score, f1_score
 from sklearn.metrics import roc_curve,roc_auc_score, precision_recall_curve, average_precision_score
 from sklearn.linear_model import LogisticRegression
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics import accuracy_score
+
 
 import re
 from nltk.corpus import stopwords
@@ -133,7 +136,72 @@ df=pd.concat([df,texttile,textbody],axis=1)
 ## Remove less important features
 df = df.drop(['Body', 'Title','Tags','creationDate','LastActivityDate','CurrentDate','AcceptedAnswerId'],axis = 1,inplace=False)
 
+## Scalling column using RobustScaler
+df['Id'] = RobustScaler().fit_transform(df['Id'].values.reshape(-1,1))
+df['PostTypeId'] = RobustScaler().fit_transform(df['PostTypeId'].values.reshape(-1,1))
+#df['creationDate'] = RobustScaler().fit_transform(df['creationDate'].values.reshape(-1,1))
+df['DateDifference'] = RobustScaler().fit_transform(df['DateDifference'].values.reshape(-1,1))
+df['Score'] = RobustScaler().fit_transform(df['Score'].values.reshape(-1,1))
+df['ViewCount'] = RobustScaler().fit_transform(df['ViewCount'].values.reshape(-1,1))
+#df['LastActivityDate'] = RobustScaler().fit_transform(df['LastActivityDate'].values.reshape(-1,1))
+#df['Tags'] = RobustScaler().fit_transform(df['Tags'].values.reshape(-1,1))
+df['AnswerCount'] = RobustScaler().fit_transform(df['AnswerCount'].values.reshape(-1,1))
+df['CommentCount'] = RobustScaler().fit_transform(df['CommentCount'].values.reshape(-1,1))
 
+
+## training and testing dataset devide
+# Class count
+# Define the prep_data function to extrac features 
+def prep_data(df):
+    X = df.drop(['ErrorMessage'],axis=1, inplace=False)  
+    X = np.array(X).astype(np.float)
+    y = df[['ErrorMessage']]  
+    y = np.array(y).astype(np.float)
+    return X,y
+
+# Create X and y from the prep_data function 
+X, y = prep_data(df)
+y= y.astype(np.int64)
+    
+#print(Counter(y))
+
+# Apply different ML Classification Algorithm
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=None)
+
+
+# ****** LogisticRegression Accuration test
+model = LogisticRegression()
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+
+
+## Machine learning evaluation matrix
+accuracy = accuracy_score(y_test, y_pred)
+precision, recall, thresholds = precision_recall_curve(y_test, y_pred)
+pre_scor= precision_score(y_test, y_pred)
+re_scor = recall_score(y_test, y_pred)
+f1_scor = f1_score(y_test, y_pred)
+
+print("==================== Evaluation Score ======================")
+print("Accuracy: %.2f%%" % (accuracy * 100.0))
+print("\n Precision Score:  %.2f%%" % (pre_scor * 100.0))
+print("\n Recall Score:  %.2f%%" % (re_scor * 100.0))
+print('\n F1-Measure: %.2f%%' % (f1_scor * 100.0))
+
+print("=============End Evaluation ===============================")
+
+
+####### Apply under sampling technique
+#rus = LogisticRegression()
+#X_rus, y_rus = rus.fit_sample(X, y)
+#y_rus= y_rus.astype(np.int64)
+#print(y_rus)
+
+######### After resampling data set ration 
+#print('Removed indexes:', id_rus)
+#print(Counter(y_rus))
+#plot_2d_space(X_rus, y_rus, 'Random under-sampling')
 
 
 
