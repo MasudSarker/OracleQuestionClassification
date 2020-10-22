@@ -1,0 +1,31 @@
+Common
+1. Question that view is higher than 100 user & question life time is more than 1 year
+2. Question that view is higher than 50 user & question life time is below than 1 year
+3. Question view is higher corresponding with life time 
+4. Wrong oracle expression related error (Wrong way: SELECT employee_id, sum(salary) FROM employees) 
+5. Question life time is more then 1 year and view is higher than 1000
+
+
+1. Oracle database connection and new implementation and throw error from programming language
+Ex: 
+sqldeveloper error message: Network adapter could not establish the connection error
+2. Question view is higher corresponding with question life time 
+Ex:
+3. Database feature related error like index, constrain, pl/sql, previlege
+4. Database connection related error throw programmer language
+
+
+Uncommon
+1. Incorrect Syntex error, variable syntex error, user syntex mistake
+Ex:
+ora-00907 where is the error (Multiple long column is not supported)
+2. Oracle bug related error
+Ex: ORA-00600: internal error code, arguments: [kcblasm_1]
+3. Database ddl and dml syntex error 
+Ex: 
+ORA-02270 error while creating a table
+
+
+ 
+
+
