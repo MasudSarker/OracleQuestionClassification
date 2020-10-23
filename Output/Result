@@ -1,1 +1,18 @@
 
+==================== Logistic Regression Evaluation Score ======================
+Accuracy: 95.00%
+
+ Precision Score:  83.33%
+
+ Recall Score:  62.50%
+
+ F1-Measure: 71.43%
+=============End Evaluation ===============================
+==================== SVM Evaluation Algorithm ======================
+Accuracy: 93.75%
+
+ Precision Score:  100.00%
+
+ Recall Score:  37.50%
+
+ F1-Measure: 54.55%
