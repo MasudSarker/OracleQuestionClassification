@@ -19,6 +19,9 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import precision_score, recall_score, f1_score
 from sklearn.metrics import roc_curve,roc_auc_score, precision_recall_curve, average_precision_score
 from sklearn.linear_model import LogisticRegression
+from sklearn import svm
+from sklearn.svm import SVC
+import csv
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import accuracy_score
@@ -37,7 +40,7 @@ stemmer = SnowballStemmer('english')
 stop_words = set(stopwords.words('english'))
 
 import pandas as pd
-df = pd.read_csv("QueryResults.csv")
+df = pd.read_csv("RowDataSetTest.csv")
 df.head()
 
 
@@ -133,6 +136,22 @@ textbody=pd.DataFrame(textbody)
 
 df=pd.concat([df,texttile,textbody],axis=1)
 
+
+## After preprocessing data save into csv file
+#with open('finaldataset.csv', 'w') as f:
+#    writer = csv.writer(f, )
+ #   writer.writerow( ('Id','PostTypeId','AcceptedAnswerId','creationDate','CurrentDate','Days','Score','ViewCount','Body','LastActivityDate','Title','Tags','AnswerCount','CommentCount','Class') )
+  #  for column in range(1):
+     #  writer.writerow(df['Title'])
+       
+     
+     
+#for row in df:
+
+#f.close()
+
+## End of CSV
+
 ## Remove less important features
 df = df.drop(['Body', 'Title','Tags','creationDate','LastActivityDate','CurrentDate','AcceptedAnswerId'],axis = 1,inplace=False)
 
@@ -140,7 +159,7 @@ df = df.drop(['Body', 'Title','Tags','creationDate','LastActivityDate','CurrentD
 df['Id'] = RobustScaler().fit_transform(df['Id'].values.reshape(-1,1))
 df['PostTypeId'] = RobustScaler().fit_transform(df['PostTypeId'].values.reshape(-1,1))
 #df['creationDate'] = RobustScaler().fit_transform(df['creationDate'].values.reshape(-1,1))
-df['DateDifference'] = RobustScaler().fit_transform(df['DateDifference'].values.reshape(-1,1))
+df['Days'] = RobustScaler().fit_transform(df['Days'].values.reshape(-1,1))
 df['Score'] = RobustScaler().fit_transform(df['Score'].values.reshape(-1,1))
 df['ViewCount'] = RobustScaler().fit_transform(df['ViewCount'].values.reshape(-1,1))
 #df['LastActivityDate'] = RobustScaler().fit_transform(df['LastActivityDate'].values.reshape(-1,1))
@@ -149,13 +168,14 @@ df['AnswerCount'] = RobustScaler().fit_transform(df['AnswerCount'].values.reshap
 df['CommentCount'] = RobustScaler().fit_transform(df['CommentCount'].values.reshape(-1,1))
 
 
+
 ## training and testing dataset devide
 # Class count
 # Define the prep_data function to extrac features 
 def prep_data(df):
-    X = df.drop(['ErrorMessage'],axis=1, inplace=False)  
+    X = df.drop(['Class'],axis=1, inplace=False)  
     X = np.array(X).astype(np.float)
-    y = df[['ErrorMessage']]  
+    y = df[['Class']]  
     y = np.array(y).astype(np.float)
     return X,y
 
@@ -167,7 +187,7 @@ y= y.astype(np.int64)
 
 # Apply different ML Classification Algorithm
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=None)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=None)
 
 
 # ****** LogisticRegression Accuration test
@@ -175,15 +195,21 @@ model = LogisticRegression()
 model.fit(X_train, y_train)
 y_pred = model.predict(X_test)
 
+#clf = svm()
+# instantiate classifier with default hyperparameters
+clf = SVC()
+clf.fit(X_train, y_train)
+y_predsvm = clf.predict(X_test)
 
-## Machine learning evaluation matrix
+
+##LogisticRegression  Machine learning evaluation matrix
 accuracy = accuracy_score(y_test, y_pred)
 precision, recall, thresholds = precision_recall_curve(y_test, y_pred)
 pre_scor= precision_score(y_test, y_pred)
 re_scor = recall_score(y_test, y_pred)
 f1_scor = f1_score(y_test, y_pred)
 
-print("==================== Evaluation Score ======================")
+print("==================== Logistic Regression Evaluation Score ======================")
 print("Accuracy: %.2f%%" % (accuracy * 100.0))
 print("\n Precision Score:  %.2f%%" % (pre_scor * 100.0))
 print("\n Recall Score:  %.2f%%" % (re_scor * 100.0))
@@ -191,17 +217,18 @@ print('\n F1-Measure: %.2f%%' % (f1_scor * 100.0))
 
 print("=============End Evaluation ===============================")
 
+## SVM Algorithm Apply
+accuracy = accuracy_score(y_test, y_predsvm)
+pre_scor= precision_score(y_test, y_predsvm)
+re_scor = recall_score(y_test, y_predsvm)
+f1_scor = f1_score(y_test, y_predsvm)
 
-####### Apply under sampling technique
-#rus = LogisticRegression()
-#X_rus, y_rus = rus.fit_sample(X, y)
-#y_rus= y_rus.astype(np.int64)
-#print(y_rus)
+print("==================== SVM Evaluation Algorithm ======================")
+print("Accuracy: %.2f%%" % (accuracy * 100.0))
+print("\n Precision Score:  %.2f%%" % (pre_scor * 100.0))
+print("\n Recall Score:  %.2f%%" % (re_scor * 100.0))
+print('\n F1-Measure: %.2f%%' % (f1_scor * 100.0))
 
-######### After resampling data set ration 
-#print('Removed indexes:', id_rus)
-#print(Counter(y_rus))
-#plot_2d_space(X_rus, y_rus, 'Random under-sampling')
-
+print("=============End Evaluation ===============================")
 
 
