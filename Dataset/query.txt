@@ -1,0 +1,19 @@
+
+select top 1000 
+t.Id,t.PostTypeId
+,t.AcceptedAnswerId
+,FORMAT(t.CreationDate,'dd-MM-yyyy') AS creationDate
+,FORMAT(GETDATE(),'dd-MM-yyyy') AS CurrentDate
+,DATEDIFF(day,t.CreationDate,GETDATE()) as Days
+,t.Score
+,t.ViewCount
+,t.Body
+,LastActivityDate
+,t.Title
+,t.Tags
+,t.AnswerCount
+,t.CommentCount
+ from posts t
+where t.tags like '%oracle%'
+and t.title like '%error%'
+and t.score>0
