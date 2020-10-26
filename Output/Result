@@ -1,18 +1,32 @@
-
 ==================== Logistic Regression Evaluation Score ======================
-Accuracy: 95.00%
+Accuracy: 94.17%
 
- Precision Score:  83.33%
+ Precision Score:  91.67%
 
- Recall Score:  62.50%
+ Recall Score:  64.71%
 
- F1-Measure: 71.43%
-=============End Evaluation ===============================
+ F1-Measure: 75.86%
 ==================== SVM Evaluation Algorithm ======================
-Accuracy: 93.75%
+Accuracy: 90.00%
 
  Precision Score:  100.00%
 
- Recall Score:  37.50%
+ Recall Score:  29.41%
 
- F1-Measure: 54.55%
+ F1-Measure: 45.45%
+==================== Random Forest Classifier Algorithm ======================
+Accuracy: 90.83%
+
+ Precision Score:  100.00%
+
+ Recall Score:  35.29%
+
+ F1-Measure: 52.17%
+==================== Decision Tree Classifier Algorithm ======================
+Accuracy: 99.17%
+
+ Precision Score:  100.00%
+
+ Recall Score:  94.12%
+
+ F1-Measure: 96.97%
